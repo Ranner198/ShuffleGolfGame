@@ -47,8 +47,12 @@ public class GameManager : MonoBehaviour
             playerRef.index = i;
             playerRef.color = Random.ColorHSV();
 
-            camera.GetComponent<CameraTracker>().playerGO = player;
-            camera.GetComponent<CameraTracker>().player = playerRef;
+            CameraTracker cameraTracker = camera.GetComponent<CameraTracker>();
+
+            cameraTracker.playerGO = player;
+            cameraTracker.player = playerRef;
+
+            player.GetComponent<Movement>().centre = cameraTracker.centre;
 
             players.Add(playerRef);
         }

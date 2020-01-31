@@ -7,6 +7,7 @@ public class Movement : MonoBehaviour
     public Rigidbody rb;
     public Players player;
     public Vector3 lastSafeSpot;
+    public GameObject centre;
     public bool windingUp = false, stopped = false;
     public LayerMask walls;
     public LayerMask OB;
@@ -19,22 +20,31 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             Reset();
         }
 
         if (Input.GetMouseButtonDown(0) && !windingUp && stopped && !player.finished)
         {
+            centre.SetActive(true);
             windingUp = true;
-            Debug.DrawLine(Input.mousePosition + transform.position, transform.position, Color.red, Time.deltaTime);
         }
-        if (Input.GetMouseButtonUp(0) && windingUp && stopped)
+        if (windingUp)
         {
             var mousePos = Input.mousePosition;
             mousePos.x -= Screen.width / 2;
             mousePos.y -= Screen.height / 2;
 
+            Vector3 direction = mousePos;
+            centre.transform.rotation = Quaternion.LookRotation(direction, centre.transform.up);
+        }
+        if (Input.GetMouseButtonUp(0) && windingUp && stopped)
+        {
+            centre.SetActive(false);
+            var mousePos = Input.mousePosition;
+            mousePos.x -= Screen.width / 2;
+            mousePos.y -= Screen.height / 2;
             Shoot(Clamp(mousePos));
         }
 
@@ -79,6 +89,7 @@ public class Movement : MonoBehaviour
     }
     public Vector3 Clamp(Vector3 speed)
     {
+        // Add a way to keep this universal for all screen sizes :(
         float width = Screen.width;
         float height = Screen.height;
         Vector3 newSpeed = Vector3.zero;
