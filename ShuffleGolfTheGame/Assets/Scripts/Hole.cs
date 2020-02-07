@@ -13,4 +13,11 @@ public class Hole : MonoBehaviour
             GameManager.instance.HoleFinished(other.gameObject.GetComponent<Players>().index);            
         }
     }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            GameManager.instance.UnFinished(other.gameObject.GetComponent<Players>().index);
+        }
+    }
 }

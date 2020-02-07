@@ -12,10 +12,10 @@ GameObject:
   - component: {fileID: 3402957183355480775}
   - component: {fileID: 3402957183356577799}
   - component: {fileID: 3402957184057698144}
-  - component: {fileID: 3402957184057698172}
   - component: {fileID: 3402957184057698171}
   - component: {fileID: 3402957184057698145}
-  m_Layer: 0
+  - component: {fileID: 2677951293265859810}
+  m_Layer: 11
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -29,13 +29,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3402957183358842567}
-  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.70710677}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0.234, z: 0}
-  m_LocalScale: {x: 22.575163, y: 22.57515, z: 3.018916}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90.00001, y: 0, z: 0}
 --- !u!33 &3402957183355480775
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -61,7 +61,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f045fbc1b77c1c04fa4d453068f43916, type: 3}
+  - {fileID: 2100000, guid: 455e7b5db9c1b744f8862aebb77e0f1e, type: 2}
+  - {fileID: 2100000, guid: 627d34110bbd95549839a7891664f997, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -97,20 +98,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!64 &3402957184057698172
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3402957183358842567}
-  m_Material: {fileID: 13400000, guid: 4bec8a90cde40fa468985af8efb7df51, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 1
-  m_CookingOptions: 14
-  m_Mesh: {fileID: 4300000, guid: f045fbc1b77c1c04fa4d453068f43916, type: 3}
 --- !u!114 &3402957184057698171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,6 +113,7 @@ MonoBehaviour:
   rb: {fileID: 3402957184057698144}
   player: {fileID: 3402957184057698145}
   lastSafeSpot: {x: 0, y: 0, z: 0}
+  centre: {fileID: 0}
   windingUp: 0
   stopped: 0
   walls:
@@ -154,3 +142,17 @@ MonoBehaviour:
   strokeCount: 0
   holeScore: 0
   finished: 0
+--- !u!64 &2677951293265859810
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3402957183358842567}
+  m_Material: {fileID: 13400000, guid: 5e39fde7388432d499e6f1eaba0dc620, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 1
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 4300000, guid: f045fbc1b77c1c04fa4d453068f43916, type: 3}

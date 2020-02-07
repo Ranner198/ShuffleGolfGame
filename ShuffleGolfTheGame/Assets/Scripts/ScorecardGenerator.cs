@@ -19,12 +19,12 @@ public class ScorecardGenerator : MonoBehaviour
 
         gameObject.SetActive(false);
     }
-    public void UpdateScorecard()
+    public void UpdateScorecard(int currentHole)
     {
-        int currentHole = GameManager.instance.holeNumber;
-        for (int i = 0; i < players.Count; i++)
+        for (int i = 0; i < GameManager.instance.players.Count; i++)
         {
             players[i].scoreCard[currentHole+1].text = GameManager.instance.players[i].holeScore.ToString();
+            print(GameManager.instance.players[i].holeScore.ToString());
             players[i].scoreCard[players[i].scoreCard.Count - 1].text = GameManager.instance.players[i].strokeCount.ToString();
             GameManager.instance.players[i].holeScore = 0;
         }
