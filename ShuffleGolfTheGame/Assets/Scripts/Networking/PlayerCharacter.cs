@@ -5,21 +5,28 @@ using BeardedManStudios.Forge.Networking.Generated;
 
 public class PlayerCharacter : PlayerCharacterBehavior
 {
+
     public GameObject playerCamera;
     public GameObject playerPuck;
+
     protected override void NetworkStart()
     {
         if (!networkObject.IsOwner)
             playerCamera.SetActive(false);
 
         GameManager.instance.players.Add(playerPuck.GetComponent<Players>());
+
+        DontDestroyOnLoad(gameObject);
     }
 
     void Update()
     {
-        if (!networkObject.IsServer)
+        if (networkObject != null)
         {
-            networkObject.index = 0;
+            if (!networkObject.IsServer)
+            {
+                networkObject.index = 0;
+            }
         }
     }
 }

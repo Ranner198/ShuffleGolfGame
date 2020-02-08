@@ -10,13 +10,14 @@ public class ScorecardGenerator : MonoBehaviour
     public List<PlayerScore> players = new List<PlayerScore>();
     public void StartMethod()
     {        
+        /*
         for (int i = 0; i < GameManager.instance.numberOfPlayers; i++)
         {
             players.Add(new PlayerScore());
             GameObject scoreCardEntity = Instantiate(scoreCardPrefab, ScoreCardObject.transform);
             players[i].scoreCard = new List<TextMeshProUGUI>(scoreCardEntity.GetComponent<ScoreCardDataHolder>().DataCells);
         }
-
+        */
         gameObject.SetActive(false);
     }
     public void UpdateScorecard(int currentHole)

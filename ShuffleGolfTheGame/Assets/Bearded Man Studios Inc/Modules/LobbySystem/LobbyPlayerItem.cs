@@ -43,9 +43,12 @@ namespace BeardedManStudios.Forge.Networking.Unity.Lobby
 
 		public void SetParent(Transform parent)
 		{
-			ThisTransform.SetParent(parent);
-			ThisTransform.localPosition = Vector3.zero;
-			ThisTransform.localScale = Vector3.one;
+            if (ThisTransform != null)
+            {
+                ThisTransform.SetParent(parent);
+                ThisTransform.localPosition = Vector3.zero;
+                ThisTransform.localScale = Vector3.one;
+            }
 		}
 
 		public void KickPlayer()
@@ -85,7 +88,9 @@ namespace BeardedManStudios.Forge.Networking.Unity.Lobby
 			if (TeamColors.Length > id && id >= 0)
 				avatarColor = AvatarColors[id];
 
-			AvatarID.text = id.ToString();
+            if (AvatarID != null)
+			    AvatarID.text = id.ToString();
+            if (AvatarBG != null)
 			AvatarBG.color = avatarColor;
 		}
 
@@ -96,7 +101,8 @@ namespace BeardedManStudios.Forge.Networking.Unity.Lobby
 
 		public void ChangeTeam(int id)
 		{
-			PlayerTeamID.text = string.Format("Team {0}", id);
+            if (PlayerTeamID != null)
+			    PlayerTeamID.text = string.Format("Team {0}", id);
 		}
 
 		public void ToggleInteractables(bool value)
@@ -109,7 +115,8 @@ namespace BeardedManStudios.Forge.Networking.Unity.Lobby
 
             AvatarBG.raycastTarget = value;
 			PlayerTeamID.raycastTarget = value;
-			PlayerName.interactable = value;
+            if (PlayerName != null)
+			    PlayerName.interactable = value;
 		}
 
 		public void ToggleObject(bool value)

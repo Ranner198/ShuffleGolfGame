@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using BeardedManStudios.Forge.Networking.Unity;
 using BeardedManStudios.Forge.Networking;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    public int holeNumber;
-
+    public int holeNumber = -1;
+    
     public GameObject scoreCard, quitButton;
     private ScorecardGenerator scorecardGenerator;    
 
@@ -21,9 +22,11 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public List<Holes> holes;
 
-    string hostAddress = "127.0.0.1";
-    ushort port = 15937;
+    public ServerManager serverManager;
+
     UDPClient client = new UDPClient();
+
+    private GameObject holesObject;
 
     #region SingletonDeclration
     public void Awake()
@@ -35,34 +38,78 @@ public class GameManager : MonoBehaviour
         }
         else if (instance != this)
             Destroy(gameObject);
+
+        //Delegates
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
     #endregion  
 
     public void Start()
-    {              
+    {
         scorecardGenerator = scoreCard.GetComponent<ScorecardGenerator>();
         scorecardGenerator.StartMethod();
 
-        client.serverAccepted += OnServerAccepted;
-        client.Connect(hostAddress, port);
-    }    
+        //if (!NetworkManager.Instance.Networker.IsServer)
+
+        //StartCoroutine(Delay());
+    }
+    IEnumerator Delay()
+    {
+        yield return new WaitForSeconds(.5f);
+        AddPlayer();
+    }
+    IEnumerator Bruh()
+    {
+        yield return new WaitForSeconds(.2f);
+        print("wut");
+        serverManager.GetNumberOfPlayers();
+    }
     public Players AddPlayer()
     {
-        var Player = NetworkManager.Instance.InstantiatePlayerCharacter();
+        var Player = NetworkManager.Instance.InstantiatePlayerCharacter();       
         var playerRef = Player.transform.GetChild(0).GetComponent<Players>();
         playerRef.index = numberOfPlayers;        
-        print("times called");
         return playerRef;
-    }    
-
-    private void OnServerAccepted(NetWorker clientNetworker)
+    }  
+    public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        numberOfPlayers++;
-     
-        MainThreadManager.Run(() => {
-            AddPlayer();
-        });
+        if (scene.name == "GameScene")
+        {
+            holesObject = GameObject.Find("Holes");
+            GenerateHoleData();
+            StartCoroutine(Delay());
+        }
     }
+ 
+    public void GenerateHoleData()
+    {
+        if (holes.Count > 0)
+            holes.Clear();
+
+        foreach (Transform hole in holesObject.transform)
+        {
+            Holes temp = new Holes();
+            foreach (Transform setPiece in hole.transform)
+            {
+                switch (setPiece.gameObject.name)
+                {
+                    case ("Tee"):
+                        temp.teepad = setPiece.gameObject;
+                        break;
+                    case ("FowardDirection"):
+                        temp.fowardDirection = setPiece.gameObject;
+                        break;
+                    case ("Hole"):
+                        temp.hole = setPiece.gameObject;
+                        break;
+                }
+            }
+            holes.Add(temp);
+        }
+    
+        holes = new List<Holes>(holes);
+    }
+
     IEnumerator NextHole()
     {    
         scorecardGenerator.UpdateScorecard(holeNumber);

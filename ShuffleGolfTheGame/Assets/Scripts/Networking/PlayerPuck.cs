@@ -24,19 +24,23 @@ public class PlayerPuck : PlayerPuckBehavior
    
     void Update()
     {
-        if (!networkObject.IsOwner)
+        if (networkObject != null)
         {
-            transform.position = networkObject.position;
-            transform.rotation = networkObject.rotation;
-            playerSkin.color = networkObject.characterColor;
-            player.strokeCount = networkObject.StrokeCount;
-            player.holeScore = networkObject.HoleScore;
-            return;
-        }
+            if (!networkObject.IsOwner)
+            {
+                transform.position = networkObject.position;
+                transform.rotation = networkObject.rotation;                
+                player.strokeCount = networkObject.StrokeCount;
+                player.holeScore = networkObject.HoleScore;
+                if (playerSkin != null)
+                    playerSkin.color = networkObject.characterColor;
+                return;
+            }
 
-        networkObject.position = transform.position;
-        networkObject.rotation = transform.rotation;
-        networkObject.StrokeCount = player.strokeCount;
-        networkObject.HoleScore = player.holeScore;
+            networkObject.position = transform.position;
+            networkObject.rotation = transform.rotation;
+            networkObject.StrokeCount = player.strokeCount;
+            networkObject.HoleScore = player.holeScore;
+        }
     }
 }
