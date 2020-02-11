@@ -8,7 +8,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 	[GeneratedInterpol("{\"inter\":[0]")]
 	public partial class ServerManagerNetworkObject : NetworkObject
 	{
-		public const int IDENTITY = 8;
+		public const int IDENTITY = 9;
 
 		private byte[] _dirtyFields = new byte[1];
 
@@ -16,35 +16,35 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		public event FieldChangedEvent fieldAltered;
 		#pragma warning restore 0067
 		[ForgeGeneratedField]
-		private int _numOfPlayers;
-		public event FieldEvent<int> numOfPlayersChanged;
-		public Interpolated<int> numOfPlayersInterpolation = new Interpolated<int>() { LerpT = 0f, Enabled = false };
-		public int numOfPlayers
+		private int _CurrentHoleNumber;
+		public event FieldEvent<int> CurrentHoleNumberChanged;
+		public Interpolated<int> CurrentHoleNumberInterpolation = new Interpolated<int>() { LerpT = 0f, Enabled = false };
+		public int CurrentHoleNumber
 		{
-			get { return _numOfPlayers; }
+			get { return _CurrentHoleNumber; }
 			set
 			{
 				// Don't do anything if the value is the same
-				if (_numOfPlayers == value)
+				if (_CurrentHoleNumber == value)
 					return;
 
 				// Mark the field as dirty for the network to transmit
 				_dirtyFields[0] |= 0x1;
-				_numOfPlayers = value;
+				_CurrentHoleNumber = value;
 				hasDirtyFields = true;
 			}
 		}
 
-		public void SetnumOfPlayersDirty()
+		public void SetCurrentHoleNumberDirty()
 		{
 			_dirtyFields[0] |= 0x1;
 			hasDirtyFields = true;
 		}
 
-		private void RunChange_numOfPlayers(ulong timestep)
+		private void RunChange_CurrentHoleNumber(ulong timestep)
 		{
-			if (numOfPlayersChanged != null) numOfPlayersChanged(_numOfPlayers, timestep);
-			if (fieldAltered != null) fieldAltered("numOfPlayers", _numOfPlayers, timestep);
+			if (CurrentHoleNumberChanged != null) CurrentHoleNumberChanged(_CurrentHoleNumber, timestep);
+			if (fieldAltered != null) fieldAltered("CurrentHoleNumber", _CurrentHoleNumber, timestep);
 		}
 
 		protected override void OwnershipChanged()
@@ -55,24 +55,24 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		
 		public void SnapInterpolations()
 		{
-			numOfPlayersInterpolation.current = numOfPlayersInterpolation.target;
+			CurrentHoleNumberInterpolation.current = CurrentHoleNumberInterpolation.target;
 		}
 
 		public override int UniqueIdentity { get { return IDENTITY; } }
 
 		protected override BMSByte WritePayload(BMSByte data)
 		{
-			UnityObjectMapper.Instance.MapBytes(data, _numOfPlayers);
+			UnityObjectMapper.Instance.MapBytes(data, _CurrentHoleNumber);
 
 			return data;
 		}
 
 		protected override void ReadPayload(BMSByte payload, ulong timestep)
 		{
-			_numOfPlayers = UnityObjectMapper.Instance.Map<int>(payload);
-			numOfPlayersInterpolation.current = _numOfPlayers;
-			numOfPlayersInterpolation.target = _numOfPlayers;
-			RunChange_numOfPlayers(timestep);
+			_CurrentHoleNumber = UnityObjectMapper.Instance.Map<int>(payload);
+			CurrentHoleNumberInterpolation.current = _CurrentHoleNumber;
+			CurrentHoleNumberInterpolation.target = _CurrentHoleNumber;
+			RunChange_CurrentHoleNumber(timestep);
 		}
 
 		protected override BMSByte SerializeDirtyFields()
@@ -81,7 +81,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			dirtyFieldsData.Append(_dirtyFields);
 
 			if ((0x1 & _dirtyFields[0]) != 0)
-				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _numOfPlayers);
+				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _CurrentHoleNumber);
 
 			// Reset all the dirty fields
 			for (int i = 0; i < _dirtyFields.Length; i++)
@@ -100,15 +100,15 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 			if ((0x1 & readDirtyFlags[0]) != 0)
 			{
-				if (numOfPlayersInterpolation.Enabled)
+				if (CurrentHoleNumberInterpolation.Enabled)
 				{
-					numOfPlayersInterpolation.target = UnityObjectMapper.Instance.Map<int>(data);
-					numOfPlayersInterpolation.Timestep = timestep;
+					CurrentHoleNumberInterpolation.target = UnityObjectMapper.Instance.Map<int>(data);
+					CurrentHoleNumberInterpolation.Timestep = timestep;
 				}
 				else
 				{
-					_numOfPlayers = UnityObjectMapper.Instance.Map<int>(data);
-					RunChange_numOfPlayers(timestep);
+					_CurrentHoleNumber = UnityObjectMapper.Instance.Map<int>(data);
+					RunChange_CurrentHoleNumber(timestep);
 				}
 			}
 		}
@@ -118,10 +118,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			if (IsOwner)
 				return;
 
-			if (numOfPlayersInterpolation.Enabled && !numOfPlayersInterpolation.current.UnityNear(numOfPlayersInterpolation.target, 0.0015f))
+			if (CurrentHoleNumberInterpolation.Enabled && !CurrentHoleNumberInterpolation.current.UnityNear(CurrentHoleNumberInterpolation.target, 0.0015f))
 			{
-				_numOfPlayers = (int)numOfPlayersInterpolation.Interpolate();
-				//RunChange_numOfPlayers(numOfPlayersInterpolation.Timestep);
+				_CurrentHoleNumber = (int)CurrentHoleNumberInterpolation.Interpolate();
+				//RunChange_CurrentHoleNumber(CurrentHoleNumberInterpolation.Timestep);
 			}
 		}
 

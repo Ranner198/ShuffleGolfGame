@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedInterpol("{\"inter\":[0.15,0.15,0,0,0]")]
+	[GeneratedInterpol("{\"inter\":[0.15,0.15,0,0,0,0]")]
 	public partial class PlayerPuckNetworkObject : NetworkObject
 	{
 		public const int IDENTITY = 6;
@@ -170,6 +170,37 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			if (HoleScoreChanged != null) HoleScoreChanged(_HoleScore, timestep);
 			if (fieldAltered != null) fieldAltered("HoleScore", _HoleScore, timestep);
 		}
+		[ForgeGeneratedField]
+		private bool _Finished;
+		public event FieldEvent<bool> FinishedChanged;
+		public Interpolated<bool> FinishedInterpolation = new Interpolated<bool>() { LerpT = 0f, Enabled = false };
+		public bool Finished
+		{
+			get { return _Finished; }
+			set
+			{
+				// Don't do anything if the value is the same
+				if (_Finished == value)
+					return;
+
+				// Mark the field as dirty for the network to transmit
+				_dirtyFields[0] |= 0x20;
+				_Finished = value;
+				hasDirtyFields = true;
+			}
+		}
+
+		public void SetFinishedDirty()
+		{
+			_dirtyFields[0] |= 0x20;
+			hasDirtyFields = true;
+		}
+
+		private void RunChange_Finished(ulong timestep)
+		{
+			if (FinishedChanged != null) FinishedChanged(_Finished, timestep);
+			if (fieldAltered != null) fieldAltered("Finished", _Finished, timestep);
+		}
 
 		protected override void OwnershipChanged()
 		{
@@ -184,6 +215,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			characterColorInterpolation.current = characterColorInterpolation.target;
 			StrokeCountInterpolation.current = StrokeCountInterpolation.target;
 			HoleScoreInterpolation.current = HoleScoreInterpolation.target;
+			FinishedInterpolation.current = FinishedInterpolation.target;
 		}
 
 		public override int UniqueIdentity { get { return IDENTITY; } }
@@ -195,6 +227,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			UnityObjectMapper.Instance.MapBytes(data, _characterColor);
 			UnityObjectMapper.Instance.MapBytes(data, _StrokeCount);
 			UnityObjectMapper.Instance.MapBytes(data, _HoleScore);
+			UnityObjectMapper.Instance.MapBytes(data, _Finished);
 
 			return data;
 		}
@@ -221,6 +254,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			HoleScoreInterpolation.current = _HoleScore;
 			HoleScoreInterpolation.target = _HoleScore;
 			RunChange_HoleScore(timestep);
+			_Finished = UnityObjectMapper.Instance.Map<bool>(payload);
+			FinishedInterpolation.current = _Finished;
+			FinishedInterpolation.target = _Finished;
+			RunChange_Finished(timestep);
 		}
 
 		protected override BMSByte SerializeDirtyFields()
@@ -238,6 +275,8 @@ namespace BeardedManStudios.Forge.Networking.Generated
 				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _StrokeCount);
 			if ((0x10 & _dirtyFields[0]) != 0)
 				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _HoleScore);
+			if ((0x20 & _dirtyFields[0]) != 0)
+				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _Finished);
 
 			// Reset all the dirty fields
 			for (int i = 0; i < _dirtyFields.Length; i++)
@@ -319,6 +358,19 @@ namespace BeardedManStudios.Forge.Networking.Generated
 					RunChange_HoleScore(timestep);
 				}
 			}
+			if ((0x20 & readDirtyFlags[0]) != 0)
+			{
+				if (FinishedInterpolation.Enabled)
+				{
+					FinishedInterpolation.target = UnityObjectMapper.Instance.Map<bool>(data);
+					FinishedInterpolation.Timestep = timestep;
+				}
+				else
+				{
+					_Finished = UnityObjectMapper.Instance.Map<bool>(data);
+					RunChange_Finished(timestep);
+				}
+			}
 		}
 
 		public override void InterpolateUpdate()
@@ -350,6 +402,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			{
 				_HoleScore = (int)HoleScoreInterpolation.Interpolate();
 				//RunChange_HoleScore(HoleScoreInterpolation.Timestep);
+			}
+			if (FinishedInterpolation.Enabled && !FinishedInterpolation.current.UnityNear(FinishedInterpolation.target, 0.0015f))
+			{
+				_Finished = (bool)FinishedInterpolation.Interpolate();
+				//RunChange_Finished(FinishedInterpolation.Timestep);
 			}
 		}
 

@@ -25,7 +25,6 @@ public class ScorecardGenerator : MonoBehaviour
         for (int i = 0; i < GameManager.instance.players.Count; i++)
         {
             players[i].scoreCard[currentHole+1].text = GameManager.instance.players[i].holeScore.ToString();
-            print(GameManager.instance.players[i].holeScore.ToString());
             players[i].scoreCard[players[i].scoreCard.Count - 1].text = GameManager.instance.players[i].strokeCount.ToString();
             GameManager.instance.players[i].holeScore = 0;
         }

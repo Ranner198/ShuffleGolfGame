@@ -8,8 +8,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    public int holeNumber = -1;
-    
+
     public GameObject scoreCard, quitButton;
     private ScorecardGenerator scorecardGenerator;    
 
@@ -41,6 +40,8 @@ public class GameManager : MonoBehaviour
 
         //Delegates
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+        // Add a on client disconnect method
     }
     #endregion  
 
@@ -48,27 +49,17 @@ public class GameManager : MonoBehaviour
     {
         scorecardGenerator = scoreCard.GetComponent<ScorecardGenerator>();
         scorecardGenerator.StartMethod();
-
-        //if (!NetworkManager.Instance.Networker.IsServer)
-
-        //StartCoroutine(Delay());
     }
     IEnumerator Delay()
     {
         yield return new WaitForSeconds(.5f);
         AddPlayer();
     }
-    IEnumerator Bruh()
-    {
-        yield return new WaitForSeconds(.2f);
-        print("wut");
-        serverManager.GetNumberOfPlayers();
-    }
     public Players AddPlayer()
     {
         var Player = NetworkManager.Instance.InstantiatePlayerCharacter();       
         var playerRef = Player.transform.GetChild(0).GetComponent<Players>();
-        playerRef.index = numberOfPlayers;        
+        playerRef.index = GameObject.FindGameObjectsWithTag("Player").Length;        
         return playerRef;
     }  
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -112,7 +103,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator NextHole()
     {    
-        scorecardGenerator.UpdateScorecard(holeNumber);
+        scorecardGenerator.UpdateScorecard(serverManager.GetCurrentHole());
 
         scoreCard.SetActive(true);
         
@@ -125,13 +116,13 @@ public class GameManager : MonoBehaviour
         }
 
         // Game Over
-        if (holeNumber+1 >= holes.Count)
+        if (serverManager.GetCurrentHole() + 1 >= holes.Count)
         {
             quitButton.SetActive(true);
             yield break;
         }
 
-        yield return new WaitForSecondsRealtime(3);
+        yield return new WaitForSecondsRealtime(2);
 
         while (cg.alpha > 0)
         {
@@ -141,19 +132,23 @@ public class GameManager : MonoBehaviour
 
         scoreCard.SetActive(false);
 
-        holeNumber+=1;
+        if (NetworkManager.Instance.IsServer)
+            serverManager.NextHole();
+
+        yield return new WaitForSecondsRealtime(1);
 
         for (int i = 0; i < players.Count; i++)
         {            
-            players[i].character.transform.position = holes[holeNumber].teepad.transform.position;
-            Vector3 direction = holes[holeNumber].fowardDirection.transform.position - players[i].cameraFocusPoint.transform.position;
-            players[i].cameraFocusPoint.transform.rotation = Quaternion.LookRotation(direction, Vector3.up);          
+            players[i].character.transform.position = holes[serverManager.GetCurrentHole()].teepad.transform.position;
+            //Vector3 direction = holes[serverManager.GetCurrentHole()].fowardDirection.transform.position - players[i].cameraFocusPoint.transform.position;
+            //players[i].cameraFocusPoint.transform.rotation = Quaternion.LookRotation(direction, Vector3.up);          
         }
 
         yield return new WaitForSeconds(.1f);
 
+        // Set the finish hole triggers to false
         for (int i = 0; i < players.Count; i++)
-            players[i].finished = false;
+            players[i].GetComponent<PlayerPuck>().CompleteHole();       
     }
 
     public void HoleFinished(int index)

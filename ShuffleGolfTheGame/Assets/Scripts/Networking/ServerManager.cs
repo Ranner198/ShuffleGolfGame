@@ -5,16 +5,18 @@ using BeardedManStudios.Forge.Networking.Generated;
 
 public class ServerManager : ServerManagerBehavior
 {
-    public int GetNumberOfPlayers()
+    public int currentHole = 0;
+
+    public void NextHole()
     {
-        return networkObject.numOfPlayers;
+        print("Next Hole Was Called");
+        currentHole+=1;
+        networkObject.CurrentHoleNumber = currentHole;        
     }
-    public void PlayerJoined()
+
+    public int GetCurrentHole()
     {
-        networkObject.numOfPlayers++;
-    }
-    public void PlayerDisconnected()
-    {
-        networkObject.numOfPlayers--;
+        currentHole = networkObject.CurrentHoleNumber;
+        return currentHole;
     }
 }

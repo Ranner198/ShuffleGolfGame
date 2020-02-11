@@ -32,6 +32,7 @@ public class PlayerPuck : PlayerPuckBehavior
                 transform.rotation = networkObject.rotation;                
                 player.strokeCount = networkObject.StrokeCount;
                 player.holeScore = networkObject.HoleScore;
+                player.finished = networkObject.Finished;
                 if (playerSkin != null)
                     playerSkin.color = networkObject.characterColor;
                 return;
@@ -41,6 +42,17 @@ public class PlayerPuck : PlayerPuckBehavior
             networkObject.rotation = transform.rotation;
             networkObject.StrokeCount = player.strokeCount;
             networkObject.HoleScore = player.holeScore;
+            networkObject.Finished = player.finished;
         }
+    }
+
+    public void CompleteHole()
+    {
+        networkObject.Finished = false;
+    }
+    public void FinishedHole()
+    {
+        networkObject.Finished = true;
+        GameManager.instance.HoleFinished(gameObject.GetComponent<Players>().index);
     }
 }

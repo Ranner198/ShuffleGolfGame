@@ -10,7 +10,7 @@ public class Hole : MonoBehaviour
         {
             other.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
             other.gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-            GameManager.instance.HoleFinished(other.gameObject.GetComponent<Players>().index);            
+            other.gameObject.GetComponent<PlayerPuck>().FinishedHole();                      
         }
     }
     private void OnTriggerExit(Collider other)
